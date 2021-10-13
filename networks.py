@@ -1,5 +1,5 @@
 import networkx as nx
-
+import math
 
 def network_scale(G, vis=True):
     """
@@ -55,3 +55,36 @@ def count_nodes_degree(G, vis=True):
 
     res = degree_0, degree_1, degree_big
     return res
+
+def renumber_network(x, key, G):
+    """
+    renumber the nodes of graph from zero to n-1
+    :param x: dataframe, have the unique identification
+              like 'xxx_id'
+    :param key: str, the name of unique identification
+    :param G: networkx, original graph
+    :return: renumbered Graph ( from 0 to n-1 )
+    """
+    nodes_id = x[key].tolist()
+
+    id2index = {}
+    index = 0
+    for node in nodes_id:
+        if math.isnan(node):
+            continue
+        node = int(node)
+        id2index[node] = index
+        index += 1
+
+    index_edges = []
+    for edge in G.edges():
+        if math.isnan(edge[0]) or math.isnan(edge[1]):
+            continue
+        tmp = (id2index[int(edge[0])], id2index[int(edge[1])])
+        index_edges.append(tmp)
+
+    G_index = nx.Graph()
+    G_index.add_edges_from(index_edges)
+    G_index.add_nodes_from(list(id2index.values()))
+
+    return G_index
