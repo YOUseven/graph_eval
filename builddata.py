@@ -13,7 +13,7 @@ def process_user(df_user, key):
     return df_user
 
 def process_network(df_user, df_friend, df_network, key):
-    usr_node, frd_node = list(set(df_user[key].values.tolist)), list(set(df_friend[key].values.tolist()))
+    usr_node, frd_node = list(set(df_user[key].values.tolist())), list(set(df_friend[key].values.tolist()))
     node_list = list(set(usr_node+frd_node))
     G = nx.Graph()
     df_network = df_network.dropna(how='all')
